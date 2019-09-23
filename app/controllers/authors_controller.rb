@@ -7,9 +7,14 @@ class AuthorsController < ApplicationController
   end
 
   def create
-    @author = Author.create!(author_params)
+    @author = Author.new(author_params) #creates the form but does not saves it
 
-    redirect_to author_path(@author)
+    if @author.valid? #checks for validation
+      @author.save #if valid - saves
+      redirect_to author_path(@author) #and redirects
+    else
+      render :new #else renders a new form 
+    end
   end
 
   private
