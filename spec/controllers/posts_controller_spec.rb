@@ -8,36 +8,36 @@ RSpec.describe PostsController do
       category: "Non-Fiction"
     }
   end
-  let(:article_found) { Post.find(@article.id) }
+  let(:post_found) { Post.find(@post.id) }
 
   before do
-    @article = Post.create!(attributes)
+    @post = Post.create!(attributes)
   end
 
   describe "showing a post" do
     it "shows a post" do
-      get :show, params: { id: @article.id }
-      expect(article_found).to eq(@article)
+      get :show, params: { id: @post.id }
+      expect(post_found).to eq(@post)
     end
   end
 
   describe "making valid updates" do
     let(:new_attributes) do
       attributes.merge(
-        id: @article.id,
+        id: @post.id,
         title: "Fifteen Ways to Transcend Corporeal Form",
         category: "Fiction"
       )
     end
 
     it "updates successfully" do
-      @article.update(new_attributes)
-      expect(article_found.title).to eq(new_attributes[:title])
+      @post.update(new_attributes)
+      expect(post_found.title).to eq(new_attributes[:title])
     end
 
     it "redirects to show page" do
       patch :update, params: new_attributes
-      expect(response).to redirect_to(post_path(@article))
+      expect(response).to redirect_to(post_path(@post))
     end
   end
 
@@ -45,32 +45,32 @@ RSpec.describe PostsController do
   describe "making invalid updates" do
     let(:bad_attributes) do
       {
-        id: @article.id,
+        id: @post.id,
         title: nil,
         content: "too short",
         category: "Speculative Fiction"
       }
     end
 
-    let(:article_bad) { Post.create(bad_attributes) }
+    let(:post_bad) { Post.create(bad_attributes) }
 
     it "has an error for missing title" do
-      expect(article_bad.errors[:title]).to_not be_empty
+      expect(post_bad.errors[:title]).to_not be_empty
     end
 
     it "has an error for too short content" do
-      expect(article_bad.errors[:content]).to_not be_empty
+      expect(post_bad.errors[:content]).to_not be_empty
     end
 
     it "has an error for invalid category" do
-      expect(article_bad.errors[:category]).to_not be_empty
+      expect(post_bad.errors[:category]).to_not be_empty
     end
 
     describe "controller actions" do
       before { patch :update, params: bad_attributes }
 
       it "does not update" do
-        expect(article_found.content).to_not eq("too short")
+        expect(post_found.content).to_not eq("too short")
       end
 
       it "renders the form again" do
